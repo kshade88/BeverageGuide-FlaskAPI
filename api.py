@@ -11,6 +11,7 @@ from dotenv import load_dotenv, find_dotenv
 
 app = Flask(__name__)
 setup_db(app)
+app.secret_key = 'dev'
 CORS(app)
 
 
@@ -25,13 +26,23 @@ auth0 = oauth.register(
     'auth0',
     client_id='MTUTENeOhGyl519OQIlyusbMNIRJ3nFm',
     client_secret='h2TbYeWGoUGxruf4v9Lzoo5u_SMsDxcH_Sgtk-l6QQhtoUOt-_mBRTlxhc99MXFS',
-    api_base_url='https://beverage-guide-api.us.auth0.com',
-    access_token_url='https://beverage-guide-api.us.auth0.com/oauth/token',
-    authorize_url='https://beverage-guide-api.us.auth0.com/authorize',
+    api_base_url='https://beverage-guide-fsnd.us.auth0.com',
+    access_token_url='https://beverage-guide-fsnd.us.auth0.com/oauth/token',
+    authorize_url='https://beverage-guide-fsnd.us.auth0.com/authorize',
     client_kwargs={
         'scope': 'openid profile email',
     },
 )
+
+
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Headers',
+                        'Content-Type,Authorization,true')
+    response.headers.add('Access-Control-Allow-Methods',
+                        'GET,PATCH,POST,DELETE,OPTIONS')
+    session.pop('_flashes', None)
+    return response
 
 
 # Here we're using the /callback route.
@@ -49,15 +60,14 @@ def callback_handling():
         'name': userinfo['name'],
         'picture': userinfo['picture']
     }
-    return redirect('/dashboard')
+    return redirect('/')
 
 
 @app.route('/login')
 def login():
-    return auth0.authorize_redirect(redirect_uri='http://localhost:8100, http://localhost:8100/tabs/user-page')
+    return auth0.authorize_redirect(redirect_uri='https://localhost:5000/callback, '
+                                                 'https://localhost:8100/tabs/user-page')
 
-
-# /server.py
 
 @app.route('/logout')
 def logout():
@@ -66,6 +76,7 @@ def logout():
     # Redirect user to logout endpoint
     params = {'returnTo': url_for('home', _external=True), 'client_id': 'MTUTENeOhGyl519OQIlyusbMNIRJ3nFm'}
     return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
+
 
 """
 Cocktails
