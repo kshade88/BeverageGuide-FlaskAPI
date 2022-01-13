@@ -16,64 +16,14 @@ def create_app(test_config=None):
     app.secret_key = 'dev'
     CORS(app)
 
-
-    """
-    Auth0 Config
-    """
-
-    oauth = OAuth(app)
-
-    auth0 = oauth.register(
-        'auth0',
-        client_id='MTUTENeOhGyl519OQIlyusbMNIRJ3nFm',
-        client_secret='h2TbYeWGoUGxruf4v9Lzoo5u_SMsDxcH_Sgtk-l6QQhtoUOt-_mBRTlxhc99MXFS',
-        api_base_url='https://beverage-guide-fsnd.us.auth0.com',
-        access_token_url='https://beverage-guide-fsnd.us.auth0.com/oauth/token',
-        authorize_url='https://beverage-guide-fsnd.us.auth0.com/authorize',
-        client_kwargs={
-            'scope': 'openid profile email',
-        },
-    )
-
     @app.after_request
     def after_request(response):
         response.headers.add('Access-Control-Allow-Headers',
                              'Content-Type,Authorization,true')
         response.headers.add('Access-Control-Allow-Methods',
                              'GET,PATCH,POST,DELETE,OPTIONS')
-        session.pop('_flashes', None)
+
         return response
-
-    # Here we're using the /callback route.
-    @app.route('/callback')
-    def callback_handling():
-        # Handles response from token endpoint
-        auth0.authorize_access_token()
-        resp = auth0.get('userinfo')
-        userinfo = resp.json()
-
-        # Store the user information in flask session.
-        session['jwt_payload'] = userinfo
-        session['profile'] = {
-            'user_id': userinfo['sub'],
-            'name': userinfo['name'],
-            'picture': userinfo['picture']
-        }
-        return redirect('/')
-
-    @app.route('/login')
-    def login():
-        return auth0.authorize_redirect(redirect_uri='http://localhost:5000/callback')
-
-
-    @app.route('/logout')
-    def logout():
-        # Clear session stored data
-        session.clear()
-        # Redirect user to logout endpoint
-        params = {'returnTo': url_for('login', _external=True), 'client_id': 'MTUTENeOhGyl519OQIlyusbMNIRJ3nFm'}
-        return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
-
 
     """
     Cocktails
@@ -82,28 +32,39 @@ def create_app(test_config=None):
 
     @app.route('/cocktails')
     @requires_auth('get:cocktails')
-    def get_cockatils(jwt):
-        cocktails = Cocktail.query.all()
+    def get_cockatils(payload):
+        try:
+            cocktails = Cocktail.query.all()
 
-        return jsonify({
-            'success': True,
-            'name': [cocktail.basic() for cocktail in cocktails]
-        })
+            return jsonify({
+                'success': True,
+                'name': [cocktail.basic() for cocktail in cocktails]
+            })
+        except:
+            abort(422)
 
     # specific cocktail info
 
     @app.route('/cocktails/<int:cocktail_id>')
+    @requires_auth('get:cocktails')
     def get_cocktail_by_id(cocktail_id):
-        cocktail = Cocktail.query.filter(Cocktail.id == cocktail_id).one_or_none()
+        try:
+            cocktail = Cocktail.query.filter(Cocktail.id == cocktail_id).one_or_none()
 
-        return jsonify({
-            'success': True,
-            'cocktail': cocktail.detailed()
-        })
+            if len(cocktail) == 0:
+                abort(404)
+
+            return jsonify({
+                'success': True,
+                'cocktail': cocktail.detailed()
+            })
+        except:
+            abort(422)
 
     # create cocktail
 
     @app.route('/cocktails', methods=['POST'])
+    @requires_auth('post:cocktails')
     def create_cocktail():
         body = request.get_json()
 
@@ -113,24 +74,28 @@ def create_app(test_config=None):
         glassware = body.get('glassware')
         tags = body.get('tags')
 
-        new_cocktail = Cocktail(name=name,
-                                ingredients=ingredients,
-                                directions=directions,
-                                glassware=glassware)
+        try:
+            new_cocktail = Cocktail(name=name,
+                                    ingredients=ingredients,
+                                    directions=directions,
+                                    glassware=glassware)
 
-        bev_tags = BevTag.query.filter(BevTag.id.in_(tags)).all()
-        new_cocktail.tags = bev_tags
+            bev_tags = BevTag.query.filter(BevTag.id.in_(tags)).all()
+            new_cocktail.tags = bev_tags
 
-        new_cocktail.create()
+            new_cocktail.create()
 
-        return jsonify({
-            'success': True,
-            'created_cocktail': new_cocktail.detailed()
-        })
+            return jsonify({
+                'success': True,
+                'created_cocktail': new_cocktail.detailed()
+            })
+        except:
+            abort(422)
 
     # edit cocktail
 
     @app.route('/cocktails/<int:cocktail_id>', methods=['PATCH'])
+    @requires_auth('patch:cocktails')
     def update_cocktail(cocktail_id):
         body = request.get_json()
 
@@ -141,34 +106,44 @@ def create_app(test_config=None):
         glassware = body.get('glassware', cocktail.glassware)
         tags = body.get('tags', cocktail.tags)
 
-        cocktail.name = name
-        cocktail.ingredients = ingredients
-        cocktail.directions = directions
-        cocktail.glassware = glassware
+        try:
+            cocktail.name = name
+            cocktail.ingredients = ingredients
+            cocktail.directions = directions
+            cocktail.glassware = glassware
 
-        bev_tags = BevTag.query.filter(BevTag.id.in_(tags)).all()
-        cocktail.tags = bev_tags
+            bev_tags = BevTag.query.filter(BevTag.id.in_(tags)).all()
+            cocktail.tags = bev_tags
 
-        cocktail.update()
+            cocktail.update()
 
-        return jsonify({
-            'success': True,
-            'created_cocktail': cocktail.detailed()
-        })
+            return jsonify({
+                'success': True,
+                'created_cocktail': cocktail.detailed()
+            })
+        except:
+            abort(422)
 
     # delete cocktail
 
     @app.route('/cocktails/<int:cocktail_id>', methods=['DELETE'])
+    @requires_auth('delete:cocktails')
     def delete_cocktail(cocktail_id):
-        cocktail = Cocktail.query.filter(Cocktail.id == cocktail_id).one_or_none()
+        try:
+            cocktail = Cocktail.query.filter(Cocktail.id == cocktail_id).one_or_none()
 
-        cocktail.delete()
+            if len(cocktail) == 0:
+                abort(404)
 
-        return jsonify({
-            'success': True,
-            'cocktail_name': cocktail.name,
-            'cocktail_id': cocktail.id
-        })
+            cocktail.delete()
+
+            return jsonify({
+                'success': True,
+                'cocktail_name': cocktail.name,
+                'cocktail_id': cocktail.id
+            })
+        except:
+            abort(422)
 
     """
     Beer
@@ -176,28 +151,40 @@ def create_app(test_config=None):
     # all beer
 
     @app.route('/beer')
+    @requires_auth('get:beer')
     def get_beer():
-        all_beer = Beer.query.all()
+        try:
+            all_beer = Beer.query.all()
 
-        return jsonify({
-            'success': True,
-            'beer': [beer.basic() for beer in all_beer]
-        })
+            return jsonify({
+                'success': True,
+                'beer': [beer.basic() for beer in all_beer]
+            })
+        except:
+            abort(422)
 
     # beer info
 
     @app.route('/beer/<int:beer_id>')
+    @requires_auth('get:beer')
     def get_beer_by_id(beer_id):
-        beer = Beer.query.filter(Beer.id == beer_id).one_or_none()
+        try:
+            beer = Beer.query.filter(Beer.id == beer_id).one_or_none()
 
-        return jsonify({
-            'success': True,
-            'beer': beer.detailed()
-        })
+            if len(beer) == 0:
+                abort(404)
+
+            return jsonify({
+                'success': True,
+                'beer': beer.detailed()
+            })
+        except:
+            abort(422)
 
     # create beer
 
     @app.route('/beer', methods=['POST'])
+    @requires_auth('post:beer')
     def create_beer():
         body = request.get_json()
 
@@ -206,78 +193,98 @@ def create_app(test_config=None):
         draft_or_bottle = body.get('draft_or_bottle')
         tags = body.get('tags')
 
-        new_beer = Beer(name=name,
-                        style=style,
-                        draft_or_bottle=draft_or_bottle)
+        try:
+            new_beer = Beer(name=name,
+                            style=style,
+                            draft_or_bottle=draft_or_bottle)
 
-        bev_tags = BevTag.query.filter(BevTag.id.in_(tags)).all()
+            bev_tags = BevTag.query.filter(BevTag.id.in_(tags)).all()
 
-        new_beer.tags = bev_tags
+            new_beer.tags = bev_tags
 
-        new_beer.create()
+            new_beer.create()
 
-        return jsonify({
-            'success': True,
-            'created_beer': new_beer.detailed()
-        })
+            return jsonify({
+                'success': True,
+                'created_beer': new_beer.detailed()
+            })
+        except:
+            abort(422)
 
     # edit beer
 
     @app.route('/beer/<int:beer_id>', methods=['PATCH'])
+    @requires_auth('patch:beer')
     def update_beer(beer_id):
         body = request.get_json()
         beer = Beer.query.filter(Beer.id == beer_id).one_or_none()
+
+        if len(beer) == 0:
+            abort(404)
 
         name = body.get('name', beer.name)
         style = body.get('style', beer.style)
         draft_or_bottle = body.get('draft_or_bottle', beer.draft_or_bottle)
         tags = body.get('tags', beer.tags)
 
-        beer.name = name
-        beer.style = style
-        beer.draft_or_bottle = draft_or_bottle
-        bev_tags = BevTag.query.filter(BevTag.id.in_(tags)).all()
-        beer.tags = bev_tags
+        try:
+            beer.name = name
+            beer.style = style
+            beer.draft_or_bottle = draft_or_bottle
+            bev_tags = BevTag.query.filter(BevTag.id.in_(tags)).all()
+            beer.tags = bev_tags
 
-        beer.update()
+            beer.update()
 
-        return jsonify({
-            'success': True,
-            'updated_beer': beer.detailed()
-        })
+            return jsonify({
+                'success': True,
+                'updated_beer': beer.detailed()
+            })
+        except:
+            abort(422)
 
     # delete beer
 
     @app.route('/beer/<int:beer_id>', methods=['DELETE'])
+    @requires_auth('delete:beer')
     def delete_beer(beer_id):
-        beer = Beer.query.filter(Beer.id == beer_id).one_or_none()
+        try:
+            beer = Beer.query.filter(Beer.id == beer_id).one_or_none()
 
-        beer.delete()
+            if len(beer) == 0:
+                abort(404)
 
-        return jsonify({
-            'success': True,
-            'beer_name': beer.name,
-            'beer_id': beer.id,
-        })
+            beer.delete()
+
+            return jsonify({
+                'success': True,
+                'beer_name': beer.name,
+                'beer_id': beer.id,
+            })
+        except:
+            abort(422)
     """
     Wine
     """
     # all wine
 
     @app.route('/wine')
+    @requires_auth('get:wine')
     def get_wine():
-        all_wine = Wine.query.all()
+        try:
+            all_wine = Wine.query.all()
 
-        return jsonify({
-            'success': True,
-            'wine': [wine.basic() for wine in all_wine]
-        })
-
+            return jsonify({
+                'success': True,
+                'wine': [wine.basic() for wine in all_wine]
+            })
+        except:
+            abort(422)
 
     # create wine
 
-
     @app.route('/wine', methods=['POST'])
+    @requires_auth('post:wine')
     def create_wine():
         body = request.get_json()
 
@@ -288,29 +295,34 @@ def create_app(test_config=None):
         appellation = body.get('appellation')
         tags = body.get('tags')
 
-        new_wine = Wine(name=name, classification=classification,
-                        varietal=varietal,
-                        vintage=vintage,
-                        appellation=appellation)
+        try:
+            new_wine = Wine(name=name, classification=classification,
+                            varietal=varietal,
+                            vintage=vintage,
+                            appellation=appellation)
 
-        bev_tags = BevTag.query.filter(BevTag.id.in_(tags)).all()
-        new_wine.tags = bev_tags
+            bev_tags = BevTag.query.filter(BevTag.id.in_(tags)).all()
+            new_wine.tags = bev_tags
 
-        new_wine.create()
+            new_wine.create()
 
-        return jsonify({
-            'success': True,
-            'created_wine': new_wine.detailed()
-        })
-
+            return jsonify({
+                'success': True,
+                'created_wine': new_wine.detailed()
+            })
+        except:
+            abort(422)
 
     # edit wine
 
-
     @app.route('/wine/<int:wine_id>', methods=['PATCH'])
+    @requires_auth('patch:wine')
     def update_wine(wine_id):
         body = request.get_json()
         wine = Wine.query.filter(Wine.id == wine_id).one_or_none()
+
+        if len(wine) == 0:
+            abort(404)
 
         name = body.get('name', wine.name)
         classification = body.get('classification')
@@ -319,191 +331,241 @@ def create_app(test_config=None):
         appellation = body.get('appellation')
         tags = body.get('tags')
 
-        wine = Wine.query.filter(Wine.id == wine_id).one_or_none()
+        try:
+            wine.name = name
+            wine.classification = classification
+            wine.varietal = varietal
+            wine.vintage = vintage
+            wine.appellation = appellation
+            wine.tags = tags
+            bev_tags = BevTag.query.filter(BevTag.id.in_(tags)).all()
+            wine.tags = bev_tags
 
-        wine.name = name
-        wine.classification = classification
-        wine.varietal = varietal
-        wine.vintage = vintage
-        wine.appellation = appellation
-        wine.tags = tags
-        bev_tags = BevTag.query.filter(BevTag.id.in_(tags)).all()
-        wine.tags = bev_tags
+            wine.update()
 
-        wine.update()
+            return jsonify({
+                'success': True,
+                'created_wine': wine.detailed()
+            })
+        except:
+            abort(422)
 
-        return jsonify({
-            'success': True,
-            'created_wine': wine.detailed()
-        })
-
-# delete wine
-
+    # delete wine
 
     @app.route('/wine/<int:wine_id>', methods=['DELETE'])
+    @requires_auth('delete:wine')
     def delete_wine(wine_id):
-        wine = Wine.query.filter(Wine.id == wine_id).one_or_none()
+        try:
+            wine = Wine.query.filter(Wine.id == wine_id).one_or_none()
 
-        wine.delete()
+            if len(wine) == 0:
+                abort(404)
 
-        return jsonify({
-            'success': True,
-            'wine_name': wine.name,
-            'wine_id': wine.id,
-        }, 200)
+            wine.delete()
+
+            return jsonify({
+                'success': True,
+                'wine_name': wine.name,
+                'wine_id': wine.id,
+            })
+        except:
+            abort(422)
+
 
     """
     Tags
     """
     # all tags
 
-
     @app.route('/tags')
+    @requires_auth('get:tags')
     def get_tags():
-        all_tags = BevTag.query.all()
+        try:
+            all_tags = BevTag.query.all()
 
-        return jsonify({
-            'success': True,
-            'tags': [tag.detailed() for tag in all_tags]
-        })
-
+            return jsonify({
+                'success': True,
+                'tags': [tag.detailed() for tag in all_tags]
+            })
+        except:
+            abort(422)
 
     # tags filtered by cocktails
 
-
     @app.route('/tags/<int:tag_id>/cocktails')
+    @requires_auth('get:tags')
     def get_cocktails_by_tag(tag_id):
-        tag = BevTag.query.get(tag_id)
-        cocktails_list = tag.cocktails
+        try:
+            tag = BevTag.query.get(tag_id)
 
-        return jsonify({
-            'success': True,
-            'tag_name': tag.name,
-            'tag_id': tag.id,
-            'cocktails': [cocktail.basic() for cocktail in cocktails_list]
-        })
+            if len(tag) == 0:
+                abort(404)
+
+            cocktails_list = tag.cocktails
+
+            return jsonify({
+                'success': True,
+                'tag_name': tag.name,
+                'tag_id': tag.id,
+                'cocktails': [cocktail.basic() for cocktail in cocktails_list]
+            })
+        except:
+            abort(422)
 
     # tags filtered by wine
 
-
     @app.route('/tags/<int:tag_id>/wine')
+    @requires_auth('get:tags')
     def get_wine_by_tag(tag_id):
-        tag = BevTag.query.get(tag_id)
-        wine_list = tag.wine
+        try:
+            tag = BevTag.query.get(tag_id)
 
-        return jsonify({
-            'success': True,
-            'tag_name': tag.name,
-            'tag_id': tag.id,
-            'cocktails': [wine.basic() for wine in wine_list]
-        })
+            if len(tag) == 0:
+                abort(404)
+
+            wine_list = tag.wine
+
+            return jsonify({
+                'success': True,
+                'tag_name': tag.name,
+                'tag_id': tag.id,
+                'cocktails': [wine.basic() for wine in wine_list]
+            })
+        except:
+            abort(422)
 
     # tags filtered by beer
 
-
     @app.route('/tags/<int:tag_id>/beer')
+    @requires_auth('get:tags')
     def get_beer_by_tag(tag_id):
-        tag = BevTag.query.get(tag_id)
-        beer_list = tag.beer
+        try:
+            tag = BevTag.query.get(tag_id)
 
-        return jsonify({
-            'success': True,
-            'tag_name': tag.name,
-            'tag_id': tag.id,
-            'cocktails': [beer.basic() for beer in beer_list]
-        })
+            if len(tag) == 0:
+                abort(404)
+
+            beer_list = tag.beer
+
+            return jsonify({
+                'success': True,
+                'tag_name': tag.name,
+                'tag_id': tag.id,
+                'cocktails': [beer.basic() for beer in beer_list]
+            })
+        except:
+            abort(422)
 
     # create tag
 
-
     @app.route('/tags', methods=['POST'])
+    @requires_auth('post:tags')
     def create_tag():
         body = request.get_json()
 
         name = body.get('name')
 
-        new_tag = BevTag(name=name)
+        try:
+            new_tag = BevTag(name=name)
 
-        new_tag.create()
+            new_tag.create()
 
-        return jsonify({
-            'success': True,
-            'tag_name': new_tag.name,
-            'tag_id': new_tag.id
-        })
-
+            return jsonify({
+                'success': True,
+                'tag_name': new_tag.name,
+                'tag_id': new_tag.id
+            })
+        except:
+            abort(422)
 
     """
     ingredients
     """
     # all ingredients
 
-
     @app.route('/ingredients')
+    @requires_auth('get:ingredients')
     def get_ingredients():
-        all_ingredients = Ingredient.query.all()
+        try:
+            all_ingredients = Ingredient.query.all()
 
-        return jsonify({
-            'success': True,
-            'ingredients': [ingredient.detailed() for ingredient in all_ingredients]
-        })
+            return jsonify({
+                'success': True,
+                'ingredients': [ingredient.detailed() for ingredient in all_ingredients]
+            })
+        except:
+            abort(422)
 
-    # ingredients filter by cocktail
-
+    # cocktails filtered by ingredient
 
     @app.route('/ingredients/<int:ingredient_id>/cocktails')
+    @requires_auth('get:ingredients')
     def get_cocktails_by_ingredient(ingredient_id):
-        ingredient = Ingredient.query.get(ingredient_id)
-        cocktail_list = ingredient.cocktails
+        try:
+            ingredient = Ingredient.query.get(ingredient_id)
 
-        return jsonify({
-            'success': True,
-            'ingredient_name': ingredient.name,
-            'ingredient_id': ingredient.id,
-            'cocktails': [cocktail.basic() for cocktail in cocktail_list]
-        })
+            if len(ingredient) == 0:
+                abort(404)
+
+            cocktail_list = ingredient.cocktails
+
+            return jsonify({
+                'success': True,
+                'ingredient_name': ingredient.name,
+                'ingredient_id': ingredient.id,
+                'cocktails': [cocktail.basic() for cocktail in cocktail_list]
+            })
+        except:
+            abort(422)
 
     # create ingredient
 
-
     @app.route('/ingredients', methods=['POST'])
+    @requires_auth('post:ingredients')
     def create_ingredeint():
-        body = request.get_json()
+        try:
+            body = request.get_json()
 
-        name = body.get('name')
+            name = body.get('name')
 
-        new_ingredient = Ingredient(name=name)
+            new_ingredient = Ingredient(name=name)
 
-        new_ingredient.create()
+            new_ingredient.create()
 
-        return jsonify({
-            'success': True,
-            'ingredient_name': new_ingredient.name,
-            'ingredient_id': new_ingredient.id,
-        })
-
+            return jsonify({
+                'success': True,
+                'ingredient_name': new_ingredient.name,
+                'ingredient_id': new_ingredient.id,
+            })
+        except:
+            abort(422)
 
     # edit ingredient
 
-
     @app.route('/ingredients/<int:ingredient_id>', methods=['PATCH'])
+    @requires_auth('patch:ingredients')
     def update_ingredeint(ingredient_id):
-        body = request.get_json()
+        try:
+            body = request.get_json()
 
-        name = body.get('name')
+            name = body.get('name')
 
-        ingredient = Ingredient.query.filter(Ingredient.id == ingredient_id).one_or_none()
+            ingredient = Ingredient.query.filter(Ingredient.id == ingredient_id).one_or_none()
 
-        ingredient.name = name
+            if len(ingredient) == 0:
+                abort(404)
 
-        ingredient.update()
+            ingredient.name = name
 
-        return jsonify({
-            'success': True,
-            'ingredient_name': ingredient.name,
-            'ingredient_id': ingredient.id,
-        })
+            ingredient.update()
 
+            return jsonify({
+                'success': True,
+                'ingredient_name': ingredient.name,
+                'ingredient_id': ingredient.id,
+            })
+        except:
+            abort(422)
 
     # Error handlers
 

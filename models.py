@@ -1,8 +1,10 @@
+import os
+
 from sqlalchemy import String, Column, Integer, Text
 from flask_sqlalchemy import SQLAlchemy
 
 database_name = "bg_flaskapi"
-database_path = "postgresql://{}/{}".format('localhost:5432', database_name)
+database_path = os.environ['DATABASE_URL']
 db = SQLAlchemy()
 
 
