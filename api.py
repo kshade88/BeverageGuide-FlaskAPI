@@ -3,7 +3,7 @@ from flask import Flask, request, abort, jsonify, render_template, session, url_
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from models import setup_db, BevTag, Cocktail, Beer, Wine, Ingredient, db
-from auth import requires_auth
+from auth import requires_auth, AuthError
 from authlib.integrations.flask_client import OAuth
 from six.moves.urllib.parse import urlencode
 from dotenv import load_dotenv, find_dotenv
@@ -620,6 +620,12 @@ def create_app(test_config=None):
             "error": 500,
             "message": "internal server error"
         })
+
+    @app.errorhandler(AuthError)
+    def auth_error(e):
+        response = jsonify(e.error)
+        response.status_code = e.status_code
+        return response
 
     return app
 
