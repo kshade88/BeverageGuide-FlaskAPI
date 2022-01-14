@@ -13,7 +13,6 @@ def create_app(test_config=None):
 
     app = Flask(__name__)
     setup_db(app)
-    app.secret_key = 'dev'
     CORS(app)
 
     @app.after_request
@@ -40,14 +39,15 @@ def create_app(test_config=None):
                 'success': True,
                 'name': [cocktail.basic() for cocktail in cocktails]
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     # specific cocktail info
 
     @app.route('/cocktails/<int:cocktail_id>')
     @requires_auth('get:cocktails')
-    def get_cocktail_by_id(cocktail_id):
+    def get_cocktail_by_id(cocktail_id, payload):
         try:
             cocktail = Cocktail.query.filter(Cocktail.id == cocktail_id).one_or_none()
 
@@ -65,7 +65,7 @@ def create_app(test_config=None):
 
     @app.route('/cocktails', methods=['POST'])
     @requires_auth('post:cocktails')
-    def create_cocktail():
+    def create_cocktail(payload):
         body = request.get_json()
 
         name = body.get('name')
@@ -89,14 +89,15 @@ def create_app(test_config=None):
                 'success': True,
                 'created_cocktail': new_cocktail.detailed()
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     # edit cocktail
 
     @app.route('/cocktails/<int:cocktail_id>', methods=['PATCH'])
     @requires_auth('patch:cocktails')
-    def update_cocktail(cocktail_id):
+    def update_cocktail(cocktail_id, payload):
         body = request.get_json()
 
         cocktail = Cocktail.query.filter(Cocktail.id == cocktail_id).one_or_none()
@@ -121,14 +122,15 @@ def create_app(test_config=None):
                 'success': True,
                 'created_cocktail': cocktail.detailed()
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     # delete cocktail
 
     @app.route('/cocktails/<int:cocktail_id>', methods=['DELETE'])
     @requires_auth('delete:cocktails')
-    def delete_cocktail(cocktail_id):
+    def delete_cocktail(cocktail_id, payload):
         try:
             cocktail = Cocktail.query.filter(Cocktail.id == cocktail_id).one_or_none()
 
@@ -142,7 +144,8 @@ def create_app(test_config=None):
                 'cocktail_name': cocktail.name,
                 'cocktail_id': cocktail.id
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     """
@@ -152,7 +155,7 @@ def create_app(test_config=None):
 
     @app.route('/beer')
     @requires_auth('get:beer')
-    def get_beer():
+    def get_beer(payload):
         try:
             all_beer = Beer.query.all()
 
@@ -160,14 +163,15 @@ def create_app(test_config=None):
                 'success': True,
                 'beer': [beer.basic() for beer in all_beer]
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     # beer info
 
     @app.route('/beer/<int:beer_id>')
     @requires_auth('get:beer')
-    def get_beer_by_id(beer_id):
+    def get_beer_by_id(beer_id, payload):
         try:
             beer = Beer.query.filter(Beer.id == beer_id).one_or_none()
 
@@ -178,14 +182,15 @@ def create_app(test_config=None):
                 'success': True,
                 'beer': beer.detailed()
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     # create beer
 
     @app.route('/beer', methods=['POST'])
     @requires_auth('post:beer')
-    def create_beer():
+    def create_beer(payload):
         body = request.get_json()
 
         name = body.get('name')
@@ -208,14 +213,15 @@ def create_app(test_config=None):
                 'success': True,
                 'created_beer': new_beer.detailed()
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     # edit beer
 
     @app.route('/beer/<int:beer_id>', methods=['PATCH'])
     @requires_auth('patch:beer')
-    def update_beer(beer_id):
+    def update_beer(beer_id, payload):
         body = request.get_json()
         beer = Beer.query.filter(Beer.id == beer_id).one_or_none()
 
@@ -240,14 +246,15 @@ def create_app(test_config=None):
                 'success': True,
                 'updated_beer': beer.detailed()
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     # delete beer
 
     @app.route('/beer/<int:beer_id>', methods=['DELETE'])
     @requires_auth('delete:beer')
-    def delete_beer(beer_id):
+    def delete_beer(beer_id, payload):
         try:
             beer = Beer.query.filter(Beer.id == beer_id).one_or_none()
 
@@ -261,7 +268,8 @@ def create_app(test_config=None):
                 'beer_name': beer.name,
                 'beer_id': beer.id,
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
     """
     Wine
@@ -270,7 +278,7 @@ def create_app(test_config=None):
 
     @app.route('/wine')
     @requires_auth('get:wine')
-    def get_wine():
+    def get_wine(payload):
         try:
             all_wine = Wine.query.all()
 
@@ -278,14 +286,15 @@ def create_app(test_config=None):
                 'success': True,
                 'wine': [wine.basic() for wine in all_wine]
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     # create wine
 
     @app.route('/wine', methods=['POST'])
     @requires_auth('post:wine')
-    def create_wine():
+    def create_wine(payload):
         body = request.get_json()
 
         name = body.get('name')
@@ -310,14 +319,15 @@ def create_app(test_config=None):
                 'success': True,
                 'created_wine': new_wine.detailed()
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     # edit wine
 
     @app.route('/wine/<int:wine_id>', methods=['PATCH'])
     @requires_auth('patch:wine')
-    def update_wine(wine_id):
+    def update_wine(wine_id, payload):
         body = request.get_json()
         wine = Wine.query.filter(Wine.id == wine_id).one_or_none()
 
@@ -347,14 +357,15 @@ def create_app(test_config=None):
                 'success': True,
                 'created_wine': wine.detailed()
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     # delete wine
 
     @app.route('/wine/<int:wine_id>', methods=['DELETE'])
     @requires_auth('delete:wine')
-    def delete_wine(wine_id):
+    def delete_wine(wine_id, payload):
         try:
             wine = Wine.query.filter(Wine.id == wine_id).one_or_none()
 
@@ -368,7 +379,8 @@ def create_app(test_config=None):
                 'wine_name': wine.name,
                 'wine_id': wine.id,
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
 
@@ -379,7 +391,7 @@ def create_app(test_config=None):
 
     @app.route('/tags')
     @requires_auth('get:tags')
-    def get_tags():
+    def get_tags(payload):
         try:
             all_tags = BevTag.query.all()
 
@@ -387,14 +399,15 @@ def create_app(test_config=None):
                 'success': True,
                 'tags': [tag.detailed() for tag in all_tags]
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     # tags filtered by cocktails
 
     @app.route('/tags/<int:tag_id>/cocktails')
     @requires_auth('get:tags')
-    def get_cocktails_by_tag(tag_id):
+    def get_cocktails_by_tag(tag_id, payload):
         try:
             tag = BevTag.query.get(tag_id)
 
@@ -409,14 +422,15 @@ def create_app(test_config=None):
                 'tag_id': tag.id,
                 'cocktails': [cocktail.basic() for cocktail in cocktails_list]
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     # tags filtered by wine
 
     @app.route('/tags/<int:tag_id>/wine')
     @requires_auth('get:tags')
-    def get_wine_by_tag(tag_id):
+    def get_wine_by_tag(tag_id, payload):
         try:
             tag = BevTag.query.get(tag_id)
 
@@ -438,7 +452,7 @@ def create_app(test_config=None):
 
     @app.route('/tags/<int:tag_id>/beer')
     @requires_auth('get:tags')
-    def get_beer_by_tag(tag_id):
+    def get_beer_by_tag(tag_id, payload):
         try:
             tag = BevTag.query.get(tag_id)
 
@@ -453,14 +467,15 @@ def create_app(test_config=None):
                 'tag_id': tag.id,
                 'cocktails': [beer.basic() for beer in beer_list]
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     # create tag
 
     @app.route('/tags', methods=['POST'])
     @requires_auth('post:tags')
-    def create_tag():
+    def create_tag(payload):
         body = request.get_json()
 
         name = body.get('name')
@@ -475,7 +490,8 @@ def create_app(test_config=None):
                 'tag_name': new_tag.name,
                 'tag_id': new_tag.id
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     """
@@ -485,7 +501,7 @@ def create_app(test_config=None):
 
     @app.route('/ingredients')
     @requires_auth('get:ingredients')
-    def get_ingredients():
+    def get_ingredients(payload):
         try:
             all_ingredients = Ingredient.query.all()
 
@@ -493,14 +509,15 @@ def create_app(test_config=None):
                 'success': True,
                 'ingredients': [ingredient.detailed() for ingredient in all_ingredients]
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     # cocktails filtered by ingredient
 
     @app.route('/ingredients/<int:ingredient_id>/cocktails')
     @requires_auth('get:ingredients')
-    def get_cocktails_by_ingredient(ingredient_id):
+    def get_cocktails_by_ingredient(ingredient_id, payload):
         try:
             ingredient = Ingredient.query.get(ingredient_id)
 
@@ -515,14 +532,15 @@ def create_app(test_config=None):
                 'ingredient_id': ingredient.id,
                 'cocktails': [cocktail.basic() for cocktail in cocktail_list]
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     # create ingredient
 
     @app.route('/ingredients', methods=['POST'])
     @requires_auth('post:ingredients')
-    def create_ingredeint():
+    def create_ingredeint(payload):
         try:
             body = request.get_json()
 
@@ -537,14 +555,15 @@ def create_app(test_config=None):
                 'ingredient_name': new_ingredient.name,
                 'ingredient_id': new_ingredient.id,
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     # edit ingredient
 
     @app.route('/ingredients/<int:ingredient_id>', methods=['PATCH'])
     @requires_auth('patch:ingredients')
-    def update_ingredeint(ingredient_id):
+    def update_ingredeint(ingredient_id, payload):
         try:
             body = request.get_json()
 
@@ -564,7 +583,8 @@ def create_app(test_config=None):
                 'ingredient_name': ingredient.name,
                 'ingredient_id': ingredient.id,
             })
-        except:
+        except Exception as e:
+            print(e)
             abort(422)
 
     # Error handlers

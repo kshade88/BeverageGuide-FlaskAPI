@@ -1,8 +1,8 @@
 import json
 from flask import request
 from functools import wraps
-from jose import jwt
 from urllib.request import urlopen
+from jose import jwt
 
 
 AUTH0_DOMAIN = 'beverage-guide-fsnd.us.auth0.com'
