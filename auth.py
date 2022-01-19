@@ -7,7 +7,7 @@ from jose import jwt
 
 AUTH0_DOMAIN = 'beverage-guide-fsnd.us.auth0.com'
 ALGORITHMS = ['RS256']
-API_AUDIENCE = 'beverage-guide-api'
+API_AUDIENCE = 'http://localhost:5000'
 
 
 class AuthError(Exception):
