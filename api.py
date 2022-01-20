@@ -38,7 +38,7 @@ def create_app(test_config=None):
 
             return jsonify({
                 'success': True,
-                'name': [cocktail.basic() for cocktail in cocktails]
+                'cocktails': [cocktail.basic() for cocktail in cocktails]
             })
         except Exception as e:
             print(e)
@@ -48,12 +48,9 @@ def create_app(test_config=None):
 
     @app.route('/cocktails/<int:cocktail_id>')
     @requires_auth('get:cocktails')
-    def get_cocktail_by_id(cocktail_id, payload):
+    def get_cocktail_by_id(payload, cocktail_id):
         try:
             cocktail = Cocktail.query.filter(Cocktail.id == cocktail_id).one_or_none()
-
-            if len(cocktail) == 0:
-                abort(404)
 
             return jsonify({
                 'success': True,
@@ -172,12 +169,9 @@ def create_app(test_config=None):
 
     @app.route('/beer/<int:beer_id>')
     @requires_auth('get:beer')
-    def get_beer_by_id(beer_id, payload):
+    def get_beer_by_id(payload, beer_id):
         try:
             beer = Beer.query.filter(Beer.id == beer_id).one_or_none()
-
-            if len(beer) == 0:
-                abort(404)
 
             return jsonify({
                 'success': True,
@@ -328,19 +322,16 @@ def create_app(test_config=None):
 
     @app.route('/wine/<int:wine_id>', methods=['PATCH'])
     @requires_auth('patch:wine')
-    def update_wine(wine_id, payload):
+    def update_wine(payload, wine_id):
         body = request.get_json()
         wine = Wine.query.filter(Wine.id == wine_id).one_or_none()
 
-        if len(wine) == 0:
-            abort(404)
-
         name = body.get('name', wine.name)
-        classification = body.get('classification')
-        varietal = body.get('varietal')
-        vintage = body.get('vintage')
-        appellation = body.get('appellation')
-        tags = body.get('tags')
+        classification = body.get('classification', wine.classification)
+        varietal = body.get('varietal', wine.varietal)
+        vintage = body.get('vintage', wine.vintage)
+        appellation = body.get('appellation', wine.appellation)
+        tags = body.get('tags', wine.tags)
 
         try:
             wine.name = name
