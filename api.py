@@ -285,6 +285,22 @@ def create_app(test_config=None):
             print(e)
             abort(422)
 
+    # wine info
+
+    @app.route('/wine/<int:wine_id>')
+    @requires_auth('get:wine')
+    def get_wine_by_id(payload, wine_id):
+        try:
+            wine = Wine.query.filter(Wine.id == wine_id).one_or_none()
+
+            return jsonify({
+                'success': True,
+                'wine': wine.detailed()
+            })
+        except Exception as e:
+            print(e)
+            abort(422)
+
     # create wine
 
     @app.route('/wine', methods=['POST'])

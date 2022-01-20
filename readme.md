@@ -130,4 +130,38 @@ Below is a library of all expected endpoints and their behaviors.
 ### GET `/wine`
 - Fecthes a list of all wine in a name and id format
 - expected return:
+```js
+{
+    "success": true,
+    "wine": [
+        {
+            "id": 1,
+            "name": "Katherine Goldsmcidt"
+        },
+        {
+            "id": 2,
+            "name": "Portlandia"
+        }
+    ]
+}
+```
+
+### GET `/wine/<int>`
+- Fetches a specific wine based on wine id.
+- Returns a detailed repsonse.
+- Expected return:
+```js
+{
+    "success": true,
+    "wine": {
+        "appellation": "Oregon",
+        "classification": "red",
+        "id": 2,
+        "name": "Portlandia",
+        "tags": [],
+        "varietal": "Pinot Noir",
+        "vintage": 2019
+    }
+}
+```
 
