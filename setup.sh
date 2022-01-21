@@ -1,4 +1,4 @@
-export DATABASE_URL="postgres://pshwynegytsimb:cdf9310b780c9d402c987b838340d5e"
+export DATABASE_URL="postgresql://pshwynegytsimb:cdf9310b780c9d402c987b838340d5e"
 
 export AUTH0_DOMAIN='beverage-guide-fsnd.us.auth0.com'
 export ALGORITHMS='RS256'
