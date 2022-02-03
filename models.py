@@ -3,7 +3,7 @@ import os
 from sqlalchemy import String, Column, Integer, Text
 from flask_sqlalchemy import SQLAlchemy
 
-database_name = "bg_flaskapi"
+
 database_path = os.environ['DATABASE_URL']
 db = SQLAlchemy()
 
@@ -16,8 +16,31 @@ def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
-    db.create_all()
+    # db.create_all()
 
+
+def sample_data():
+    db.drop_all()
+    db.create_all()
+    cocktail1 = Cocktail(name="test cocktail1",
+                         ingredients=[],
+                         directions="test directions1",
+                         glassware="test glassware",
+                         tags=[])
+    beer1 = Beer(name="test beer1",
+                 style="test style1",
+                 draft_or_bottle="draft",
+                 tags=[])
+    wine1 = Wine(name="test wine1",
+                 classification="red",
+                 varietal="test varietal",
+                 appellation="test appellation",
+                 vintage=2022,
+                 tags=[])
+
+    cocktail1.create()
+    beer1.create()
+    wine1.create()
 
 
 # Beverage tags and association tables
@@ -41,11 +64,11 @@ class BevTag(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True, nullable=False)
 
-    def __str__(self):
-        return self.name
+    def __init__(self, name):
+        self.name = name
 
     def create(self):
-        db.session.add()
+        db.session.add(self)
         db.session.commit()
 
     def update(self):
@@ -75,8 +98,8 @@ class Ingredient(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True, nullable=False)
 
-    def __str__(self):
-        return self.name
+    def __init__(self, name):
+        self.name = name
 
     def create(self):
         db.session.add(self)
@@ -97,7 +120,7 @@ class Ingredient(db.Model):
 
 
 class Cocktail(db.Model):
-    __tablename__ = 'cocktails'
+    __tablename__ = "cocktails"
 
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True, nullable=False)
@@ -110,8 +133,12 @@ class Cocktail(db.Model):
                            secondary=cocktail_tags,
                            backref=db.backref('cocktails', lazy='dynamic'))
 
-    def __str__(self):
-        return self.name
+    def __init__(self, name, ingredients, directions, glassware, tags):
+        self.name = name
+        self.ingredients = ingredients
+        self.directions = directions
+        self.glassware = glassware
+        self.tags = tags
 
     def create(self):
         db.session.add(self)
@@ -130,7 +157,7 @@ class Cocktail(db.Model):
             'name': self.name,
             'directions': self.name,
             'glasswear': self.glassware,
-            'ingredients': self.ingredients,
+            'ingredients': [ingredient.name for ingredient in self.ingredients],
             'tags': [tag.name for tag in self.tags]
         }
 
@@ -151,9 +178,6 @@ class Beer(db.Model):
     style = Column(String)
     draft_or_bottle = Column(String)
     tags = db.relationship('BevTag', secondary=beer_tags, backref=db.backref('beer', lazy=True))
-
-    def __str__(self):
-        return self.name
 
     def create(self):
         db.session.add(self)
@@ -194,9 +218,6 @@ class Wine(db.Model):
     vintage = Column(Integer)
     appellation = Column(String)
     tags = db.relationship('BevTag', secondary=wine_tags, backref=db.backref('wine', lazy=True))
-
-    def __str__(self):
-        return self.name
 
     def create(self):
         db.session.add(self)

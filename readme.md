@@ -74,7 +74,7 @@ Below is a library of all expected endpoints and their behaviors.
 ```js
 {
     "cocktail": {
-        "directions": "Cosmo",
+        "directions": "Shake and pour",
         "glasswear": "martini glass",
         "id": 2,
         "ingredients": [],
@@ -162,6 +162,422 @@ Below is a library of all expected endpoints and their behaviors.
         "varietal": "Pinot Noir",
         "vintage": 2019
     }
+}
+```
+
+### GET `/tags`
+- Fetches a list of all tags.
+- Expected return
+```js
+{
+    "success": true,
+    "tags": [
+        {
+            "id": 1,
+            "name": "cool"
+        },
+        {
+            "id": 2,
+            "name": "refreshing"
+        },
+        {
+            "id": 3,
+            "name": "test tag"
+        },
+        {
+            "id": 4,
+            "name": "Boozy"
+        }
+    ]
+}
+```
+
+### GET `tags/<int>/cocktails`
+- Fetches a list of cocktails with a specific tag based on tag id.
+- Expected return:
+```js
+{
+    "cocktails": [
+        {
+            "id": 2,
+            "name": "Screw Driver"
+        },
+        {
+            "id": 1,
+            "name": "Bloody Mary"
+        },
+        {
+            "id": 3,
+            "name": "cape cod"
+        },
+        {
+            "id": 17,
+            "name": "Cosmopolitan"
+        }
+    ],
+    "success": true,
+    "tag_id": 1,
+    "tag_name": "cool"
+}
+```
+
+### GET `tags/<int>/beer`
+- Fetches a list of beer with a specific tag based on tag id.
+- Expected return:
+```js
+{
+    "beer": [
+        {
+            "id": 4,
+            "name": "Creature Comfort Classic City Lager"
+        },
+        {
+            "id": 6,
+            "name": "Hey Man Ale"
+        }
+    ],
+    "success": true,
+    "tag_id": 1,
+    "tag_name": "cool"
+}
+```
+
+### GET `tags/<int>/wine`
+- Fetches a list of wine with a specific tag based on tag id.
+- Expected return:
+```js
+{
+    "success": true,
+    "tag_id": 1,
+    "tag_name": "cool",
+    "wine": [
+        {
+            "id": 3,
+            "name": "Barone Motalto"
+        }
+    ]
+}
+```
+
+### GET `/ingredients`
+- Fetches a list of all possible cocktail ingredients.
+- Expected return:
+```js
+{
+    "ingredients": [
+        {
+            "id": 1,
+            "name": "Tito's Vodka"
+        },
+        {
+            "id": 2,
+            "name": "Four Roses Bourbon"
+        },
+        {
+            "id": 3,
+            "name": "Cranberry Juice"
+        },
+        {
+            "id": 4,
+            "name": "Tripel Sec"
+        },
+        {
+            "id": 5,
+            "name": "Bitters"
+        },
+        {
+            "id": 6,
+            "name": "Simple Syrup"
+        }
+    ],
+    "success": true
+}
+```
+
+### GET `/ingredients/<int>/cocktails`
+- Fetches a list of cocktails filtered by a specific ingredient id.
+- Expected return:
+```js
+{
+    "cocktails": [
+        {
+            "id": 17,
+            "name": "Cosmopolitan"
+        },
+        {
+            "id": 14,
+            "name": "Dirty Martini"
+        }
+    ],
+    "ingredient_id": 1,
+    "ingredient_name": "Tito's Vodka",
+    "success": true
+}
+```
+
+### POST `/cocktails`
+- Creates a new cocktail
+- Sample body:
+```js
+{
+    "name": "Old Fashioned",
+    "ingredients": [2,5,6],
+    "directions": "Stir ingredients together in ice, pour over fresh ice.",
+    "glassware": "Rocks glass",
+    "tags": [4]
+}
+```
+- Expected return:
+```js
+{
+    "created_cocktail": {
+        "directions": "Old Fashioned",
+        "glasswear": "Rocks glass",
+        "id": 16,
+        "ingredients": [
+            "Four Roses Bourbon",
+            "Bitters",
+            "Simple Syrup"
+        ],
+        "name": "Old Fashioned 7",
+        "tags": [
+            "Boozy"
+        ]
+    },
+    "success": true
+}
+```
+
+### POST `/wine`
+- Creates a new wine
+- Sample body:
+```js
+{
+    "name": "Barone Motalto",
+    "classification": "white",
+    "varietal": "Pinot Grigio",
+    "vintage": "2019",
+    "appellation": "Italy",
+    "tags": [4]
+}
+```
+- Expected return:
+```js
+{
+    "created_wine": {
+        "appellation": "Italy",
+        "classification": "white",
+        "id": 3,
+        "name": "Barone Motalto",
+        "tags": [
+            "Light"
+        ],
+        "varietal": null,
+        "vintage": 2019
+    },
+    "success": true
+}
+```
+### POST `/beer`
+- Creates a new beer in the database
+- Sample body:
+```js
+{
+    "name": "Wild Leap Chance",
+    "style": "IPA",
+    "tags": [4,2],
+    "draft_or_bottle": "draft"
+}
+```
+- Expected return:
+```js
+{
+    "created_beer": {
+        "draft_or_bottle": "draft",
+        "id": 7,
+        "name": "Wild Leap Chance",
+        "style": "IPA",
+        "tags": [
+            "refreshing",
+            "Boozy"
+        ]
+    },
+    "success": true
+}
+```
+
+### POST `/tags`
+- Creates a new tag in the database.
+- Sample body:
+```js
+{
+    "name": "Boozy"
+}
+```
+- Expected return:
+```js
+{
+    "success": true,
+    "tag_id": 4,
+    "tag_name": "Boozy"
+}
+```
+
+### POST `/ingredients`
+- Creates a new tag in the database.
+- Sample body:
+```js
+{
+    "name": "Ketel One Vodka"
+}
+```
+- Expected return:
+```js
+{
+    "ingredient_id": 6,
+    "ingredient_name": "Simple Syrup",
+    "success": true
+}
+```
+
+### PATCH `/cocktails/<int>`
+- Edits an existing cocktail based on id.
+- Will accept any number of attributes to edit, if none will keep old value.
+- Expected body:
+```js
+{
+    "name": "Classic Old Fashioned",
+    "ingredients": [2,5,6],
+    "directions": "Stir ingredients together in ice, pour over fresh ice. Garnish with cherry and orange",
+    "glassware": "Rocks glass",
+    "tags": [4]
+}
+```
+- Expected return:
+```js
+{
+    "created_cocktail": {
+        "directions": "Classic Old Fashioned",
+        "glasswear": "Rocks glass",
+        "id": 16,
+        "ingredients": [
+            "Four Roses Bourbon",
+            "Bitters",
+            "Simple Syrup"
+        ],
+        "name": "Classic Old Fashioned",
+        "tags": [
+            "Boozy"
+        ]
+    },
+    "success": true
+}
+```
+
+### PATCH `/wine/<int>`
+- Edits an existing wine based on id.
+- Will accept any number of attributes to edit, if none will keep old value.
+- Sample body:
+```js
+{
+    "name": "Barone Motalto",
+    "classification": "white",
+    "varietal": "Pinot Grigio",
+    "appellation": "Italy",
+    "tags": [1,2]
+}
+```
+- Expected return:
+```js
+{
+    "created_wine": {
+        "appellation": "Italy",
+        "classification": "white",
+        "id": 3,
+        "name": "Barone Motalto",
+        "tags": [
+            "cool",
+            "refreshing"
+        ],
+        "varietal": "Pinot Grigio",
+        "vintage": 2019
+    },
+    "success": true
+}
+```
+
+### PATCH `/beer/<int>`
+- Edits an existing beer based on id.
+- Sample body:
+```js
+{
+    "tags": [2],
+    "draft_or_bottle": "draft"
+}
+```
+- Expected return:
+```js
+{
+    "success": true,
+    "updated_beer": {
+        "draft_or_bottle": "draft",
+        "id": 2,
+        "name": "420",
+        "style": "IPA",
+        "tags": [
+            "refreshing"
+        ]
+    }
+}
+```
+
+### PATCH `/ingredients/<id>`
+- Edits an existing ingredient based on id.
+- Sample body:
+```js
+{
+    "name": "Simple Syrup test"
+}
+```
+- Expected return:
+```js
+{
+    "ingredient_id": 6,
+    "ingredient_name": "Simple Syrup",
+    "success": true
+}
+```
+
+### DELETE `/cocktails/<int>`
+- Deletes an existing cocktail based on id.
+- Expected return:
+```js
+{
+    "cocktail_id": 15,
+    "cocktail_name": "Old Fashioned",
+    "success": true
+}
+```
+
+### DELETE `/wine/<int>`
+- Deletes an existing wine based on id.
+- Expected return:
+```js
+{
+    "success": true,
+    "wine_id": 4,
+    "wine_name": "Tribute"
+}
+```
+
+### DELETE `/beer/<int>`
+- Deletes an existing beer based on id.
+- Expected return:
+```js
+{
+    "beer_id": 5,
+    "beer_name": "Hey Man Ale",
+    "success": true
 }
 ```
 

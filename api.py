@@ -8,13 +8,14 @@ from authlib.integrations.flask_client import OAuth
 from six.moves.urllib.parse import urlencode
 from dotenv import load_dotenv, find_dotenv
 
+database_path = os.environ['DATABASE_URL']
+
 
 def create_app(test_config=None):
 
     app = Flask(__name__)
     setup_db(app)
     CORS(app)
-
 
     @app.after_request
     def after_request(response):
@@ -74,11 +75,13 @@ def create_app(test_config=None):
 
         try:
             new_cocktail = Cocktail(name=name,
-                                    ingredients=ingredients,
                                     directions=directions,
                                     glassware=glassware)
 
+            ingredients_list = Ingredient.query.filter(Ingredient.id.in_(ingredients)).all()
             bev_tags = BevTag.query.filter(BevTag.id.in_(tags)).all()
+
+            new_cocktail.ingredients = ingredients_list
             new_cocktail.tags = bev_tags
 
             new_cocktail.create()
@@ -95,7 +98,7 @@ def create_app(test_config=None):
 
     @app.route('/cocktails/<int:cocktail_id>', methods=['PATCH'])
     @requires_auth('patch:cocktails')
-    def update_cocktail(cocktail_id, payload):
+    def update_cocktail(payload, cocktail_id):
         body = request.get_json()
 
         cocktail = Cocktail.query.filter(Cocktail.id == cocktail_id).one_or_none()
@@ -107,12 +110,14 @@ def create_app(test_config=None):
 
         try:
             cocktail.name = name
-            cocktail.ingredients = ingredients
             cocktail.directions = directions
             cocktail.glassware = glassware
 
             bev_tags = BevTag.query.filter(BevTag.id.in_(tags)).all()
+            ingredients_list = Ingredient.query.filter(Ingredient.id.in_(ingredients)).all()
+
             cocktail.tags = bev_tags
+            cocktail.ingredients = ingredients_list
 
             cocktail.update()
 
@@ -128,12 +133,9 @@ def create_app(test_config=None):
 
     @app.route('/cocktails/<int:cocktail_id>', methods=['DELETE'])
     @requires_auth('delete:cocktails')
-    def delete_cocktail(cocktail_id, payload):
+    def delete_cocktail(payload, cocktail_id):
         try:
             cocktail = Cocktail.query.filter(Cocktail.id == cocktail_id).one_or_none()
-
-            if len(cocktail) == 0:
-                abort(404)
 
             cocktail.delete()
 
@@ -216,12 +218,9 @@ def create_app(test_config=None):
 
     @app.route('/beer/<int:beer_id>', methods=['PATCH'])
     @requires_auth('patch:beer')
-    def update_beer(beer_id, payload):
+    def update_beer(payload, beer_id):
         body = request.get_json()
         beer = Beer.query.filter(Beer.id == beer_id).one_or_none()
-
-        if len(beer) == 0:
-            abort(404)
 
         name = body.get('name', beer.name)
         style = body.get('style', beer.style)
@@ -249,12 +248,9 @@ def create_app(test_config=None):
 
     @app.route('/beer/<int:beer_id>', methods=['DELETE'])
     @requires_auth('delete:beer')
-    def delete_beer(beer_id, payload):
+    def delete_beer(payload, beer_id):
         try:
             beer = Beer.query.filter(Beer.id == beer_id).one_or_none()
-
-            if len(beer) == 0:
-                abort(404)
 
             beer.delete()
 
@@ -355,7 +351,6 @@ def create_app(test_config=None):
             wine.varietal = varietal
             wine.vintage = vintage
             wine.appellation = appellation
-            wine.tags = tags
             bev_tags = BevTag.query.filter(BevTag.id.in_(tags)).all()
             wine.tags = bev_tags
 
@@ -373,12 +368,9 @@ def create_app(test_config=None):
 
     @app.route('/wine/<int:wine_id>', methods=['DELETE'])
     @requires_auth('delete:wine')
-    def delete_wine(wine_id, payload):
+    def delete_wine(payload, wine_id):
         try:
             wine = Wine.query.filter(Wine.id == wine_id).one_or_none()
-
-            if len(wine) == 0:
-                abort(404)
 
             wine.delete()
 
@@ -415,12 +407,9 @@ def create_app(test_config=None):
 
     @app.route('/tags/<int:tag_id>/cocktails')
     @requires_auth('get:tags')
-    def get_cocktails_by_tag(tag_id, payload):
+    def get_cocktails_by_tag(payload, tag_id):
         try:
             tag = BevTag.query.get(tag_id)
-
-            if len(tag) == 0:
-                abort(404)
 
             cocktails_list = tag.cocktails
 
@@ -438,12 +427,9 @@ def create_app(test_config=None):
 
     @app.route('/tags/<int:tag_id>/wine')
     @requires_auth('get:tags')
-    def get_wine_by_tag(tag_id, payload):
+    def get_wine_by_tag(payload, tag_id):
         try:
             tag = BevTag.query.get(tag_id)
-
-            if len(tag) == 0:
-                abort(404)
 
             wine_list = tag.wine
 
@@ -451,7 +437,7 @@ def create_app(test_config=None):
                 'success': True,
                 'tag_name': tag.name,
                 'tag_id': tag.id,
-                'cocktails': [wine.basic() for wine in wine_list]
+                'wine': [wine.basic() for wine in wine_list]
             })
         except:
             abort(422)
@@ -460,12 +446,9 @@ def create_app(test_config=None):
 
     @app.route('/tags/<int:tag_id>/beer')
     @requires_auth('get:tags')
-    def get_beer_by_tag(tag_id, payload):
+    def get_beer_by_tag(payload, tag_id):
         try:
             tag = BevTag.query.get(tag_id)
-
-            if len(tag) == 0:
-                abort(404)
 
             beer_list = tag.beer
 
@@ -473,7 +456,7 @@ def create_app(test_config=None):
                 'success': True,
                 'tag_name': tag.name,
                 'tag_id': tag.id,
-                'cocktails': [beer.basic() for beer in beer_list]
+                'beer': [beer.basic() for beer in beer_list]
             })
         except Exception as e:
             print(e)
@@ -484,11 +467,11 @@ def create_app(test_config=None):
     @app.route('/tags', methods=['POST'])
     @requires_auth('post:tags')
     def create_tag(payload):
-        body = request.get_json()
-
-        name = body.get('name')
-
         try:
+            body = request.get_json()
+
+            name = body.get('name')
+
             new_tag = BevTag(name=name)
 
             new_tag.create()
@@ -525,12 +508,9 @@ def create_app(test_config=None):
 
     @app.route('/ingredients/<int:ingredient_id>/cocktails')
     @requires_auth('get:ingredients')
-    def get_cocktails_by_ingredient(ingredient_id, payload):
+    def get_cocktails_by_ingredient(payload, ingredient_id):
         try:
             ingredient = Ingredient.query.get(ingredient_id)
-
-            if len(ingredient) == 0:
-                abort(404)
 
             cocktail_list = ingredient.cocktails
 
@@ -571,16 +551,13 @@ def create_app(test_config=None):
 
     @app.route('/ingredients/<int:ingredient_id>', methods=['PATCH'])
     @requires_auth('patch:ingredients')
-    def update_ingredeint(ingredient_id, payload):
+    def update_ingredeint(payload, ingredient_id):
         try:
             body = request.get_json()
 
             name = body.get('name')
 
             ingredient = Ingredient.query.filter(Ingredient.id == ingredient_id).one_or_none()
-
-            if len(ingredient) == 0:
-                abort(404)
 
             ingredient.name = name
 
