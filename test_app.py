@@ -17,9 +17,8 @@ class BeverageGuideTestCase(unittest.TestCase):
         self.database_name = 'bg_test'
         self.database_path = "postgresql://{}/{}".format('localhost:5432', self.database_name)
 
-        self.manager = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkQyU2dPWWZ0NTNyQ1B5Nk1jX3E0MyJ9.eyJpc3MiOiJodHRwczovL2JldmVyYWdlLWd1aWRlLWZzbmQudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDYxYjdiNWFjMzZiZjY1MDA3MTViOTQ4MiIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsImlhdCI6MTY0MzY4ODM5MywiZXhwIjoxNjQzNjk1NTkzLCJhenAiOiJNVFVURU5lT2hHeWw1MTlPUUlseXVzYk1OSVJKM25GbSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZGVsZXRlOmJlZXIiLCJkZWxldGU6Y29ja3RhaWxzIiwiZGVsZXRlOndpbmUiLCJnZXQ6YmVlciIsImdldDpjb2NrdGFpbHMiLCJnZXQ6aW5ncmVkaWVudHMiLCJnZXQ6dGFncyIsImdldDp3aW5lIiwicGF0Y2g6YmVlciIsInBhdGNoOmNvY2t0YWlscyIsInBhdGNoOmluZ3JlZGllbnRzIiwicGF0Y2g6d2luZSIsInBvc3Q6YmVlciIsInBvc3Q6Y29ja3RhaWxzIiwicG9zdDppbmdyZWRpZW50cyIsInBvc3Q6dGFncyIsInBvc3Q6d2luZSJdfQ.WKrYfTXJFr-pW_sD4DGIMKXPVi1ruVUTyd8dYdXiq-5IcqZNhJWrmc5CcJh0cip9c-yStfUtZjktQCbkRbyn-PcFtQociLZYMmIxSqw17kFdcNA2hWLf2RREZ5DrQWFrSy2h0ZMyHMR1MQHnXoGsMwNcSbeNfIiiHnyAKVfUCM2sSCA9dS3SumK442VgzSzX3v7ybpUNitkwHdxjAiQDnZuxcjhXEhowqkKGTrPi4qMkF1sV4GDHM2V_ifm0FbUllI0XXgEKZ6m6IhwyRRyH7n6F-em5V--L04VnMft9EueYB_fgPpeWeQ2mGQiOkj0il_CxOyACiQbIEojnCLruUw'
         self.team_member = ''
-
+        self.manager = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkQyU2dPWWZ0NTNyQ1B5Nk1jX3E0MyJ9.eyJpc3MiOiJodHRwczovL2JldmVyYWdlLWd1aWRlLWZzbmQudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDYxYjdiNWFjMzZiZjY1MDA3MTViOTQ4MiIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsImlhdCI6MTY0NDAwMjc1NywiZXhwIjoxNjQ0MDA5OTU3LCJhenAiOiJNVFVURU5lT2hHeWw1MTlPUUlseXVzYk1OSVJKM25GbSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZGVsZXRlOmJlZXIiLCJkZWxldGU6Y29ja3RhaWxzIiwiZGVsZXRlOndpbmUiLCJnZXQ6YmVlciIsImdldDpjb2NrdGFpbHMiLCJnZXQ6aW5ncmVkaWVudHMiLCJnZXQ6dGFncyIsImdldDp3aW5lIiwicGF0Y2g6YmVlciIsInBhdGNoOmNvY2t0YWlscyIsInBhdGNoOmluZ3JlZGllbnRzIiwicGF0Y2g6d2luZSIsInBvc3Q6YmVlciIsInBvc3Q6Y29ja3RhaWxzIiwicG9zdDppbmdyZWRpZW50cyIsInBvc3Q6dGFncyIsInBvc3Q6d2luZSJdfQ.WmRc6lQeHm2VU-7uwnvJXqUeukPNEzMWdQoixpETuLAL0L9KQwOcymU95Y3wLNxREqxglhZ5snlkmIZboj2CnIo0Vmj3FGFt7IJV1Z4ewGMrHBtzu3kECabgZlgYeoI-o9ld52Sr0H1mdafmvsLCnZqJvY_XoRdupUstRy9AyfL-M5RS7lDii-eprjo9DQknE30ru9vQIjosIEAJwhG1jWhzwwsL4Wp1O15jKZWl1Qs_JWKssX0hTfprc2h8-zH_8iVWRAdoRdlv5se5b8a04wieUkLw6FtMOq_3TbEZSC41Pqo7C5v99yHZWFvz8H_JETMTkwr4dhwo4J_BdQhiEg'
         setup_db(self.app, self.database_path)
 
         with self.app.app_context():
@@ -92,7 +91,7 @@ class BeverageGuideTestCase(unittest.TestCase):
             'name': 5
         }
 
-    #sample_data()
+    sample_data()
 
     def tearDown(self):
         pass
@@ -233,7 +232,7 @@ class BeverageGuideTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
 
     def test_patch_cocktail_success(self):
-        res = self.client().patch('/cocktails/2',
+        res = self.client().patch('/cocktails/1',
                                   headers={'Authorization': 'Bearer ' + self.manager},
                                   json={'directions': 'new set of directions'})
         data = json.loads(res.data)
