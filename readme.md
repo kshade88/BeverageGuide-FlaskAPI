@@ -3,7 +3,8 @@
 ## Introduction
 Beverage Guide Api is a resftful api built upon the flask micro framework, utilizing a postrges SQL database. It is the 
 final project in the Udacity Full Stack Nanodegree and demonstrates effective data modeling and api developement. 
-Authentication provided by Auth0 and hosted live via Heroku.
+Authentication provided by Auth0 and hosted live via Heroku. https://beverage-guide-api-fsnd.herokuapp.com/
+
 
 ## Getting started 
 Below is a set of instructions for running the api locally on your own machine.
