@@ -1,0 +1,909 @@
+{
+	"info": {
+		"_postman_id": "446bf360-ac42-4e4c-a3cf-a6221c500233",
+		"name": "Test Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Manager",
+			"item": [
+				{
+					"name": "/cocktails",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/cocktails",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"cocktails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/beer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/beer",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"beer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/wine",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/wine",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"wine"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/cocktails/<int>",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/cocktails/5",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"cocktails",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/beer/<int>",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/beer/3",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"beer",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/wine/<int>",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/wine/34",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"wine",
+								"34"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/ingredients",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/ingredients",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"ingredients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/tags",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/tags",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"tags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/ingredients/1/cocktails",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/ingredients/1/cocktails",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"ingredients",
+								"1",
+								"cocktails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/tags/2/cocktails",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/tags/2/cocktails",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"tags",
+								"2",
+								"cocktails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/tags/1/beer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/tags/1/beer",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"tags",
+								"1",
+								"beer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/ tags/1/wine",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/tags/1/wine",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"tags",
+								"1",
+								"wine"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/cocktails",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test cocktail3\",\n    \"ingredients\": [1],\n    \"glassware\": \"test glass\",\n    \"directions\": \"test directions\",\n    \"tags\": [2]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/cocktails",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"cocktails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/beer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test beer1\",\n    \"style\": \"test style\",\n    \"draft_or_bottle\": \"draft\",\n    \"tags\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/beer",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"beer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/wine",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Barone Matone\",\n    \"appellation\": \"Italy\",\n    \"vintage\": 2018,\n    \"classification\": \"white\",\n    \"varietal\": \"pinot grigio\",\n    \"tags\": [1]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/wine",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"wine"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/ingredients",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test ingredient1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/ingredients",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"ingredients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/tags",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test tag1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/tags",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"tags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/cocktails/<int>",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"patched name\",\n    \"glassware\": \"patched glassware\",\n    \"ingredients\": [],\n    \"tags\": [],\n    \"directions\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/cocktails/6",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"cocktails",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/wine/<int>",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test name\",\n    \"appellation\": \"test\",\n    \"vintage\": 2020,\n    \"tags\": [],\n    \"varietal\": \"test\",\n    \"classification\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/wine/35",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"wine",
+								"35"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/beer/<int>",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/beer/7",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"beer",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/ingredients/1",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Vodka\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/ingredients/1",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"ingredients",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/cocktails/<int>",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/cocktails/10",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"cocktails",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/beer/<int>",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/beer/8",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"beer",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/wine/<int>",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/wine/35",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"wine",
+								"35"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkQyU2dPWWZ0NTNyQ1B5Nk1jX3E0MyJ9.eyJpc3MiOiJodHRwczovL2JldmVyYWdlLWd1aWRlLWZzbmQudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDYyMDU3ZjhkM2Y5MmUyMDA3MzViYTI1OSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsImlhdCI6MTY0NDYwMjk4MCwiZXhwIjoxNjQ0Njg5MzgwLCJhenAiOiJNVFVURU5lT2hHeWw1MTlPUUlseXVzYk1OSVJKM25GbSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZGVsZXRlOmJlZXIiLCJkZWxldGU6Y29ja3RhaWxzIiwiZGVsZXRlOndpbmUiLCJnZXQ6YmVlciIsImdldDpjb2NrdGFpbHMiLCJnZXQ6aW5ncmVkaWVudHMiLCJnZXQ6dGFncyIsImdldDp3aW5lIiwicGF0Y2g6YmVlciIsInBhdGNoOmNvY2t0YWlscyIsInBhdGNoOmluZ3JlZGllbnRzIiwicGF0Y2g6d2luZSIsInBvc3Q6YmVlciIsInBvc3Q6Y29ja3RhaWxzIiwicG9zdDppbmdyZWRpZW50cyIsInBvc3Q6dGFncyIsInBvc3Q6d2luZSJdfQ.hInUm1NF5zDUxrCdaVtGa3zT0szCa8vjDwlLZOyzTD9F8O1X8lmiAcbqEx-bCwRKO_KYWRq2Ck20v1MeisDSPmzN1m4wlVel86YW5qayXOITa3eYZFWa15foIhS_A1j8QEuyUm8xRR6oWd1GR1X1YSC25ouJPN-JKQjE78E3-PvsqJ-_hsrs5U-GSi2EopqzUEIdDUhrdZm65LREs8gTUCdlO-hFvpFXchPUrTbDjYsY42NptGE2wH9oeZGyRr8WezX3uoERFfq9Wjv0TvfBnfKRdAIBosEWn9DlO4A7rfr-MiHNJKDaonVqLOzGYHSTJvzNE7Fr-F8duYwJgp4-7w",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Team Member",
+			"item": [
+				{
+					"name": "/cocktails Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/cocktails",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"cocktails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/beer Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/beer",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"beer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/wine Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/wine",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"wine"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/cocktails/1 Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/cocktails/1",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"cocktails",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/beer/1 Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/beer/1",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"beer",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/wine/1 Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/wine/1",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"wine",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/ingredients Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/ingredients",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"ingredients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/tags Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/tags",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"tags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/ingredients/1/cocktails Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/ingredients/1/cocktails",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"ingredients",
+								"1",
+								"cocktails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/tags/1/cocktails Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/tags/1/cocktails",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"tags",
+								"1",
+								"cocktails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/ tags/1/wine Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/tags/1/wine",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"tags",
+								"1",
+								"wine"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/tags/1/beer Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://beverage-guide-api-fsnd.herokuapp.com/tags/1/beer",
+							"protocol": "https",
+							"host": [
+								"beverage-guide-api-fsnd",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"tags",
+								"1",
+								"beer"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkQyU2dPWWZ0NTNyQ1B5Nk1jX3E0MyJ9.eyJpc3MiOiJodHRwczovL2JldmVyYWdlLWd1aWRlLWZzbmQudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDYyMDU4MDI0M2Y5MmUyMDA3MzViYTI5MSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsImlhdCI6MTY0NDYwMzA3MSwiZXhwIjoxNjQ0Njg5NDcxLCJhenAiOiJNVFVURU5lT2hHeWw1MTlPUUlseXVzYk1OSVJKM25GbSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZ2V0OmJlZXIiLCJnZXQ6Y29ja3RhaWxzIiwiZ2V0OmluZ3JlZGllbnRzIiwiZ2V0OnRhZ3MiLCJnZXQ6d2luZSJdfQ.t1FaQgmH2moWhOqh94R3-0WfcAXJ4p4BvebGvOnNi2OaI1NBxclY5oCPyRDTdlRiT6lKb0oN3KjlDKqFIcLsq3ocCy5D9Fui6mru9iTE7-rDg0LcEJb6PVt9OftCtihvyhBNGM5CKGVwwBNr5GZCRjhO68GOvbhNV4wkbBpTQLXp9ODIs2tolgirMj5kcZycH5AS3VCmF0wpr9YOv2hOeLngqwVUUW0_u2pDoTTKCV9aEiua0jt0yA5BlBNw-9-RrZV6GWAtal36C_ZJcebaxnAM46WuYNNABGbOZh66hVgA1SMo4daF-JGgieIz1Px4axvYe7Q3fWlAd93lxp7meg",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	]
+}

@@ -25,13 +25,13 @@ have been defined and an example for each has been provided below for testing pu
 1. Manager
     * Can access all endpoints and preform all CRUD functionallity.
     * Login
-      * Email:
-      * Password:
+      * Email: manager@email.com
+      * Password: FSNDtest1!
 2. Team Member 
     * Can access limited GET requests and can prform no CRUD funtionality.
     * Login
-      * Email:
-      * Password:
+      * Email: teammember@gmail.com
+      * Password: FSNDtest1!
 
 To login or renew expired JWTs, boiler-plate authenication access is located at:
 
@@ -589,3 +589,12 @@ Below is a library of all expected endpoints and their behaviors.
 - If tests fail due to expired jwt, reference "Authentication" above and replace jwts in .env file.
 
 ### Live with Postman Collections
+- Using the postman app, upload included postman collections
+- All collections should run successfully on first run through with exit code 200.
+- If collection is run more than once duplicate posts or deletes may cause conflict.
+- Feel free to play with endpoints and add and delete data as wanted.
+- Current JWTS are set for roughly 24 hours, if expired follow the steps above in order to generate new ones.
+
+## To Do's
+- Set up an usuable front end using html templates or node.js
+- Create app in django and relaunch to heroku
