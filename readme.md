@@ -581,3 +581,11 @@ Below is a library of all expected endpoints and their behaviors.
 }
 ```
 
+## Testing
+### Locally with unit tests
+- Set up a test database named `bg_test`.
+- Using psql terminal commands run: `CREATE DATABSE bg_test`
+- Under root directiory run: ```python3 test_app.py```
+- If tests fail due to expired jwt, reference "Authentication" above and replace jwts in .env file.
+
+### Live with Postman Collections

@@ -2,7 +2,9 @@ import os
 
 from sqlalchemy import String, Column, Integer, Text
 from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
 
+load_dotenv()
 
 database_path = os.environ['DATABASE_URL']
 db = SQLAlchemy()
@@ -26,7 +28,8 @@ def sample_data():
                          ingredients=[],
                          directions="test directions1",
                          glassware="test glassware",
-                         tags=[])
+                         tags=[]
+                         )
     beer1 = Beer(name="test beer1",
                  style="test style1",
                  draft_or_bottle="draft",
@@ -34,13 +37,17 @@ def sample_data():
     wine1 = Wine(name="test wine1",
                  classification="red",
                  varietal="test varietal",
-                 appellation="test appellation",
                  vintage=2022,
+                 appellation="test appellation",
                  tags=[])
+    ingredient1 = Ingredient(name="test ingredient1")
+    tag1 = BevTag(name="Test tag1")
 
     cocktail1.create()
     beer1.create()
     wine1.create()
+    ingredient1.create()
+    tag1.create()
 
 
 # Beverage tags and association tables
@@ -63,9 +70,6 @@ class BevTag(db.Model):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True, nullable=False)
-
-    def __init__(self, name):
-        self.name = name
 
     def create(self):
         db.session.add(self)
@@ -98,9 +102,6 @@ class Ingredient(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True, nullable=False)
 
-    def __init__(self, name):
-        self.name = name
-
     def create(self):
         db.session.add(self)
         db.session.commit()
@@ -120,7 +121,7 @@ class Ingredient(db.Model):
 
 
 class Cocktail(db.Model):
-    __tablename__ = "cocktails"
+    __tablename__ = 'cocktails'
 
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True, nullable=False)
@@ -132,13 +133,6 @@ class Cocktail(db.Model):
     tags = db.relationship('BevTag',
                            secondary=cocktail_tags,
                            backref=db.backref('cocktails', lazy='dynamic'))
-
-    def __init__(self, name, ingredients, directions, glassware, tags):
-        self.name = name
-        self.ingredients = ingredients
-        self.directions = directions
-        self.glassware = glassware
-        self.tags = tags
 
     def create(self):
         db.session.add(self)

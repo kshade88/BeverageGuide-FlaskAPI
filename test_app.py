@@ -4,9 +4,12 @@ import unittest
 import json
 from flask_sqlalchemy import SQLAlchemy
 from auth import AuthError
+from dotenv import load_dotenv
 
 from api import create_app
 from models import BevTag, Beer, Cocktail, Wine, Ingredient, setup_db, sample_data
+
+load_dotenv()
 
 
 class BeverageGuideTestCase(unittest.TestCase):
@@ -15,10 +18,10 @@ class BeverageGuideTestCase(unittest.TestCase):
         self.client = self.app.test_client
 
         self.database_name = 'bg_test'
-        self.database_path = "postgresql://{}/{}".format('localhost:5432', self.database_name)
+        self.database_path = os.environ['TEST_DATABASE_URL']
 
-        self.team_member = ''
-        self.manager = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkQyU2dPWWZ0NTNyQ1B5Nk1jX3E0MyJ9.eyJpc3MiOiJodHRwczovL2JldmVyYWdlLWd1aWRlLWZzbmQudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDYxYjdiNWFjMzZiZjY1MDA3MTViOTQ4MiIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCIsImlhdCI6MTY0NDAwMjc1NywiZXhwIjoxNjQ0MDA5OTU3LCJhenAiOiJNVFVURU5lT2hHeWw1MTlPUUlseXVzYk1OSVJKM25GbSIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiZGVsZXRlOmJlZXIiLCJkZWxldGU6Y29ja3RhaWxzIiwiZGVsZXRlOndpbmUiLCJnZXQ6YmVlciIsImdldDpjb2NrdGFpbHMiLCJnZXQ6aW5ncmVkaWVudHMiLCJnZXQ6dGFncyIsImdldDp3aW5lIiwicGF0Y2g6YmVlciIsInBhdGNoOmNvY2t0YWlscyIsInBhdGNoOmluZ3JlZGllbnRzIiwicGF0Y2g6d2luZSIsInBvc3Q6YmVlciIsInBvc3Q6Y29ja3RhaWxzIiwicG9zdDppbmdyZWRpZW50cyIsInBvc3Q6dGFncyIsInBvc3Q6d2luZSJdfQ.WmRc6lQeHm2VU-7uwnvJXqUeukPNEzMWdQoixpETuLAL0L9KQwOcymU95Y3wLNxREqxglhZ5snlkmIZboj2CnIo0Vmj3FGFt7IJV1Z4ewGMrHBtzu3kECabgZlgYeoI-o9ld52Sr0H1mdafmvsLCnZqJvY_XoRdupUstRy9AyfL-M5RS7lDii-eprjo9DQknE30ru9vQIjosIEAJwhG1jWhzwwsL4Wp1O15jKZWl1Qs_JWKssX0hTfprc2h8-zH_8iVWRAdoRdlv5se5b8a04wieUkLw6FtMOq_3TbEZSC41Pqo7C5v99yHZWFvz8H_JETMTkwr4dhwo4J_BdQhiEg'
+        self.team_member = os.environ['TEAM_MEMBER_JWT']
+        self.manager = os.environ['MANAGER_JWT']
         setup_db(self.app, self.database_path)
 
         with self.app.app_context():
@@ -26,9 +29,10 @@ class BeverageGuideTestCase(unittest.TestCase):
             self.db = SQLAlchemy()
             self.db.init_app(self.app)
             self.db.create_all()
+            sample_data()
 
         self.new_cocktail = {
-            'name': 'test cocktail',
+            'name': 'test cocktail pass',
             'ingredients': [],
             'directions': 'test directions',
             'glassware': 'test glassware',
@@ -36,32 +40,32 @@ class BeverageGuideTestCase(unittest.TestCase):
         }
 
         self.new_cocktail_fail = {
-            'name': 'test cocktail',
-            'ingredients': [],
-            'directions': 5,
+            'name': 'test cocktail fail',
+            'ingredients': 5,
+            'directions': 'test directions',
             'glassware': 'test glassware',
             'tags': []
         }
 
         self.new_beer = {
-            'name': 'test beer',
+            'name': 'test beer pass',
             'style': 'test style',
             'draft_or_bottle': 'draft',
             'tags': []
         }
 
         self.new_beer_fail ={
-            'name': 'test beer',
+            'name': 'test beer fail',
             'style': 'test style',
-            'draft_or_bottle': True,
-            'tags': []
+            'draft_or_bottle': 'draft',
+            'tags': "blue"
         }
 
         self.new_wine = {
             'name': 'test name',
             'classifictation': 'test classification',
             'varietal': 'test varietal',
-            'vintage': 'test vintage',
+            'vintage': 2000,
             'appelation': 'test appellation',
             'tags': []
         }
@@ -80,22 +84,21 @@ class BeverageGuideTestCase(unittest.TestCase):
         }
 
         self.new_tag_fail = {
-            'name': True
+            'name': 'Test tag1'
         }
 
         self.new_ingredient = {
-            'name': 'test name'
+            'name': 'new ingredient'
         }
 
         self.new_ingredient_fail = {
-            'name': 5
+            'name': 'test ingredient1'
         }
-
-    sample_data()
 
     def tearDown(self):
         pass
 
+    # GET Tests
     def test_get_cocktails_success(self):
         res = self.client().get('/cocktails', headers={'Authorization': 'Bearer ' + self.manager})
         data = json.loads(res.data)
@@ -136,6 +139,7 @@ class BeverageGuideTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['ingredients'])
 
+    # POST Tests
     def test_add_cocktail_success(self):
         res = self.client().post('/cocktails',
                                  headers={'Authorization': 'Bearer ' + self.manager},
@@ -231,6 +235,7 @@ class BeverageGuideTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data['success'], False)
 
+    # PATCH Tests
     def test_patch_cocktail_success(self):
         res = self.client().patch('/cocktails/1',
                                   headers={'Authorization': 'Bearer ' + self.manager},
@@ -240,10 +245,10 @@ class BeverageGuideTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertTrue(data['directions'], 'new set of directions')
+        self.assertTrue(data['updated_cocktail'])
 
     def test_patch_beer_success(self):
-        res = self.client().patch('/beer/2',
+        res = self.client().patch('/beer/1',
                                   headers={'Authorization': 'Bearer ' + self.manager},
                                   json={'style': 'new style'})
         data = json.loads(res.data)
@@ -251,10 +256,10 @@ class BeverageGuideTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertTrue(data['style'], 'new style')
+        self.assertTrue(data['updated_beer'])
 
     def test_patch_wine_success(self):
-        res = self.client().patch('/wine/2',
+        res = self.client().patch('/wine/1',
                                   headers={'Authorization': 'Bearer ' + self.manager},
                                   json={'vintage': 2008})
         data = json.loads(res.data)
@@ -262,10 +267,10 @@ class BeverageGuideTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertTrue(data['vintage'], 2008)
+        self.assertTrue(data['updated_wine'])
 
     def test_patch_ingredient_succes(self):
-        res = self.client().patch('/ingredients/2',
+        res = self.client().patch('/ingredients/1',
                                   headers={'Authorization': 'Bearer ' + self.manager},
                                   json={'name': 'test'})
         data = json.loads(res.data)
@@ -273,46 +278,47 @@ class BeverageGuideTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertTrue(data['name'], 'test')
+        self.assertTrue(data['ingredient_name'])
 
     def test_patch_cocktail_failure(self):
-        res = self.client().patch('/cocktails/2',
+        res = self.client().patch('/cocktails/5',
                                   headers={'Authorization': 'Bearer ' + self.manager},
                                   json={'directions': 5})
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 422)
+        self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
 
     def test_patch_beer_failure(self):
-        res = self.client().patch('/beer/2',
+        res = self.client().patch('/beer/5',
                                   headers={'Authorization': 'Bearer ' + self.manager},
                                   json={'style': True})
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 422)
+        self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
 
     def test_patch_wine_failure(self):
-        res = self.client().patch('/beer/2',
+        res = self.client().patch('/wine/5',
                                   headers={'Authorization': 'Bearer ' + self.manager},
                                   json={'vintage': 'test'})
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 422)
+        self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
 
     def test_patch_ingredient_failure(self):
-        res = self.client().patch('/ingredients/2',
+        res = self.client().patch('/ingredients/5',
                                   headers={'Authorization': 'Bearer ' + self.manager},
-                                  json={'name': 1})
+                                  json={'name': "new"})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data['success'], False)
 
+    # DELETE Tests
     def test_delete_cocktail_success(self):
-        res = self.client().delete('/cocktails/3',
+        res = self.client().delete('/cocktails/1',
                                    headers={'Authorization': 'Bearer ' + self.manager})
         data = json.loads(res.data)
 
@@ -320,7 +326,7 @@ class BeverageGuideTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
 
     def test_delete_beer_success(self):
-        res = self.client().delete('/beer/3',
+        res = self.client().delete('/beer/1',
                                    headers={'Authorization': 'Bearer ' + self.manager})
         data = json.loads(res.data)
 
@@ -328,7 +334,7 @@ class BeverageGuideTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
 
     def test_delete_wine_success(self):
-        res = self.client().delete('/wine/3',
+        res = self.client().delete('/wine/1',
                                    headers={'Authorization': 'Bearer ' + self.manager})
         data = json.loads(res.data)
 
@@ -358,6 +364,25 @@ class BeverageGuideTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data['success'], False)
+
+    # Auth Fail Tests
+    def test_no_header_failuer(self):
+        res = self.client().get('/cocktails')
+
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 401)
+
+    def test_role_unauthorized_failure(self):
+        res = self.client().post('/tags',
+                                 headers={'Auhorization': 'Bearer ' + self.team_member},
+                                 json={'name': 'test tag fail'})
+
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 401)
+
+
 
 
 if __name__ == "__main__":

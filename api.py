@@ -76,7 +76,8 @@ def create_app(test_config=None):
         try:
             new_cocktail = Cocktail(name=name,
                                     directions=directions,
-                                    glassware=glassware)
+                                    glassware=glassware,
+                                    )
 
             ingredients_list = Ingredient.query.filter(Ingredient.id.in_(ingredients)).all()
             bev_tags = BevTag.query.filter(BevTag.id.in_(tags)).all()
@@ -102,6 +103,10 @@ def create_app(test_config=None):
         body = request.get_json()
 
         cocktail = Cocktail.query.filter(Cocktail.id == cocktail_id).one_or_none()
+
+        if cocktail is None:
+            abort(404)
+
         name = body.get('name', cocktail.name)
         ingredients = body.get('ingredients', cocktail.ingredients)
         directions = body.get('directions', cocktail.directions)
@@ -123,7 +128,7 @@ def create_app(test_config=None):
 
             return jsonify({
                 'success': True,
-                'created_cocktail': cocktail.detailed()
+                'updated_cocktail': cocktail.detailed()
             })
         except Exception as e:
             print(e)
@@ -221,6 +226,9 @@ def create_app(test_config=None):
     def update_beer(payload, beer_id):
         body = request.get_json()
         beer = Beer.query.filter(Beer.id == beer_id).one_or_none()
+
+        if beer is None:
+            abort(404)
 
         name = body.get('name', beer.name)
         style = body.get('style', beer.style)
@@ -338,6 +346,9 @@ def create_app(test_config=None):
         body = request.get_json()
         wine = Wine.query.filter(Wine.id == wine_id).one_or_none()
 
+        if wine is None:
+            abort(404)
+
         name = body.get('name', wine.name)
         classification = body.get('classification', wine.classification)
         varietal = body.get('varietal', wine.varietal)
@@ -358,7 +369,7 @@ def create_app(test_config=None):
 
             return jsonify({
                 'success': True,
-                'created_wine': wine.detailed()
+                'updated_wine': wine.detailed()
             })
         except Exception as e:
             print(e)
@@ -472,15 +483,19 @@ def create_app(test_config=None):
 
             name = body.get('name')
 
-            new_tag = BevTag(name=name)
+            try:
+                new_tag = BevTag(name=name)
 
-            new_tag.create()
+                new_tag.create()
 
-            return jsonify({
-                'success': True,
-                'tag_name': new_tag.name,
-                'tag_id': new_tag.id
-            })
+                return jsonify({
+                    'success': True,
+                    'tag_name': new_tag.name,
+                    'tag_id': new_tag.id
+                })
+            except Exception as e:
+                print(e)
+                abort(401)
         except Exception as e:
             print(e)
             abort(422)
