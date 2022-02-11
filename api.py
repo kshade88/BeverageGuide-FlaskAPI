@@ -119,9 +119,8 @@ def create_app(test_config=None):
             cocktail.glassware = glassware
 
             bev_tags = BevTag.query.filter(BevTag.id.in_(tags)).all()
-            ingredients_list = Ingredient.query.filter(Ingredient.id.in_(ingredients)).all()
-
             cocktail.tags = bev_tags
+            ingredients_list = Ingredient.query.filter(Ingredient.id.in_(ingredients)).all()
             cocktail.ingredients = ingredients_list
 
             cocktail.update()
